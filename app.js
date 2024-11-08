@@ -19,15 +19,18 @@ const borderss = document.querySelector(".borders");
 const subregionn = document.querySelector(".SubRegion");
 const areaa = document.querySelector(".area");
 
+const warningText = document.querySelector(".warningText");
+
 ///////////////Funtion//////////////////////
 async function CountriyData(name) {
   const baseUrl = `https://restcountries.com/v3.1/name/${name}`;
   try {
     const response = await fetch(baseUrl);
-    const data = await response.json();
-    // console.log();
 
-    if (name.message !== "Not Found") {
+    if (response.ok) {
+      const data = await response.json();
+
+      warningText.classList.add("hidden");
       const CounteryName = data[0].name.common;
       const CounteryNameOf = data[0].name.official;
       const capital = data[0].capital ? data[0].capital[0] : "N/A";
@@ -57,9 +60,6 @@ async function CountriyData(name) {
       const languages = Object.values(data[0].languages);
       const language = languages.join(", ");
 
-      // console.log(subRegion);
-      // console.log(currencyName);
-
       contName.innerHTML = CounteryName;
       officialname.innerHTML = CounteryNameOf;
       contFlag.src = flag;
@@ -76,6 +76,11 @@ async function CountriyData(name) {
       areaa.innerHTML = `<b>Area: </b>` + " " + area;
 
       mapp.innerHTML = `<a href="${map}" class="map">Map</p>`;
+
+      container.classList.remove("hidden");
+    } else {
+      container.classList.add("hidden");
+      warningText.classList.remove("hidden");
     }
   } catch (error) {
     console.log(error);
@@ -84,6 +89,7 @@ async function CountriyData(name) {
 
 searchBtn.addEventListener("click", () => {
   const name = searchField.value;
+
   if (name.length > 0) {
     placeholder.classList.remove("hidden");
     CountriyData(name);
